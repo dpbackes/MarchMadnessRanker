@@ -8,7 +8,7 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , kenPomScraper = require('./lib/scrapers/sagarin');
+  , sagarin = require('./lib/scrapers/sagarin');
 
 var app = express();
 
@@ -28,7 +28,7 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
+app.get('/', routes.index(sagarin.teams));
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
