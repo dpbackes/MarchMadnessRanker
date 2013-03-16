@@ -7,8 +7,16 @@ block content
 		tr 
 			td Name
 			td Sagarin Rank
+			td Massey Rank
 		- each team in teams
 			tr
 				td #{team.name}
-				td #{team.Sagarin.rank}
+				- if(team.Sagarin)
+					td #{team.Sagarin.rank}
+				- else
+					td
+				- if(team.Massey)
+					td #{team.Massey.rank}
+				- else
+					td
 	

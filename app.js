@@ -13,6 +13,7 @@ var express = require('express')
 var teams = {};
 
 var sagarin = require('./lib/scrapers/sagarin')(teams);
+var massey = require('./lib/scrapers/massey')(teams);
 
 var app = express();
 
