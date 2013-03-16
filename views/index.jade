@@ -11,12 +11,12 @@ block content
 		- each team in teams
 			tr
 				td #{team.name}
-				- if(team.Sagarin)
-					td #{team.Sagarin.rank}
+				- if(team.rankings.Sagarin)
+					td #{team.rankings.Sagarin.rank}
 				- else
 					td
-				- if(team.Massey)
-					td #{team.Massey.rank}
+				- if(team.rankings.Massey)
+					td #{team.rankings.Massey.rank}
 				- else
 					td
 	

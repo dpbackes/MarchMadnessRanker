@@ -9,8 +9,13 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
   
+  
+  var TeamContainer = require('./TeamContainer').TeamContainer;
+  
+  
+  
    
-var teams = {};
+var teams = new TeamContainer();
 
 var sagarin = require('./lib/scrapers/sagarin')(teams);
 var massey = require('./lib/scrapers/massey')(teams);
@@ -33,9 +38,21 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.index(teams));
+app.get('/', function(req, res)
+{
+
+	res.render('index', { title: 'March Madness Ranker', teams: teams.GetTeamsWithBetterRank(200)});
+
+});
 app.get('/users', user.list);
 
+
+app.get('/debug', function(req, res)
+{
+	console.log(teams.GetTeamsWithBetterRank(200));
+	
+	res.send(JSON.stringify(teams.GetTeamsWithBetterRank(200)));
+});
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
