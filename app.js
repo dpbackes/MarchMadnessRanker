@@ -7,8 +7,12 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
-  , path = require('path')
-  , sagarin = require('./lib/scrapers/sagarin');
+  , path = require('path');
+  
+   
+var teams = {};
+
+var sagarin = require('./lib/scrapers/sagarin')(teams);
 
 var app = express();
 
@@ -28,7 +32,7 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.index(sagarin.teams));
+app.get('/', routes.index(teams));
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
