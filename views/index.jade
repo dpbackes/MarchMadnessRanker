@@ -3,8 +3,12 @@ extends layout
 block content
 	h1= title
 	p Welcome to #{title}
-	#teams
+	table
+		tr 
+			td Name
+			td Sagarin Rank
 		- each team in teams
-			div.team
-				p #{team.rank} #{team.name} #{team.test}
+			tr
+				td #{team.name}
+				td #{team.Sagarin.rank}
 	
