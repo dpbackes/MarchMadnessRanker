@@ -10,9 +10,6 @@ module.exports.MergeSort = MergeSort;
 */
 function MergeSort(list, compareFunc)
 {
-	
-			
-	console.log(compareFunc);
 	if(list.length <= 1)
 	{
 		return list;

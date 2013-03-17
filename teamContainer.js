@@ -5,6 +5,7 @@ module.exports.TeamContainer = TeamContainer;
 function TeamContainer()
 {
 	this.teams = {};
+	this.dirty = false;
 }
 
 TeamContainer.prototype.addTeam = function(teamName, team)
@@ -186,6 +187,13 @@ function replaceIfMatch(string, regex, replaceString)
 
 TeamContainer.prototype.CalculateAverageRankings = function()
 {
+
+	if(!this.dirty)
+	{
+		return false;
+	}
+	
+	
 	for(thisTeam in this.teams)
 	{
 		var team = this.teams[thisTeam];
@@ -206,7 +214,8 @@ TeamContainer.prototype.CalculateAverageRankings = function()
 		team.rankings.Average = team.rankings.Average || {};
 		
 		team.rankings.Average.name = "Average";
-		console.log("sum: %j count: %j average: %j", rankingSum, rankingCount, rankingSum/rankingCount);
 		team.rankings.Average.rank = (rankingSum/rankingCount);
 	}
+	
+	this.dirty= false;
 }
