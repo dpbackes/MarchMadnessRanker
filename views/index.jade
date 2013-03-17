@@ -6,7 +6,8 @@ block content
 		tr 
 			td Name
 			- each ranking in rankings
-				td= ranking
+				td
+					a(href='/ByRanking/'+ranking)= ranking
 		- each team in teams
 			tr
 				td #{team.name}
