@@ -10,7 +10,7 @@ var express = require('express')
   , path = require('path');
   
   
-  var TeamContainer = require('./TeamContainer').TeamContainer;
+  var TeamContainer = require('./teamContainer').TeamContainer;
   
   
   
