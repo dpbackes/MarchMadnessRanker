@@ -1,3 +1,5 @@
+var MergeSort = require('./sorting').MergeSort;
+
 module.exports.TeamContainer = TeamContainer;
 
 function TeamContainer()
@@ -42,23 +44,11 @@ TeamContainer.prototype.GetTeamsWithBetterRank = function(rank)
 		{
 			var team = this.teams[teamIndex];
 			
-			
-			//console.log(JSON.stringify(team.name));
-			if(team.name.match(/^Quin/))
-			{
-				console.log(team.name + JSON.stringify(team.rankings));
-				console.log(team.rankings[teamRankIndex].rank);
-			}
-			
 			for(teamRankIndex in team.rankings)
 			{
 			
 				if(team.rankings[teamRankIndex].rank < rank)
 				{
-					if(team.name.match(/^Quin/))
-					{
-						console.log("here");
-					}
 					teamsBetterRanked[team.name]=team;
 				}
 			}
@@ -69,29 +59,38 @@ TeamContainer.prototype.GetTeamsWithBetterRank = function(rank)
 
 TeamContainer.prototype.OrderByRanking = function(teamList, strRanking)
 {
-
-	//worst sorting method ever
-	var currentRank = 1;
-	var sortedTeams = {};
-
-	//lazy sorting B-)
+	var teamArray = [];
 	
-	while(Object.keys(teamList).length > 0)
+	for(team in this.teams)
 	{
-		var found = false;
-		for(team in teamList)
-		{
-			
-			if(teamList[team].rankings[strRanking].rank == currentRank)
-			{
-				sortedTeams[teamList[team].name] = teamList[team];
-				delete teamList[team];
-				found = true;
-				break;
-			}
-		}
-		currentRank++;
+		teamArray.push(this.teams[team]);
 	}
+	
+	var sortedTeams = MergeSort(teamArray, function(left, right)
+	{
+		if(!(left.rankings[strRanking]))
+		{
+			return 1;
+		}
+		
+		if(!(right.rankings[strRanking]))
+		{
+			return -1;
+		}
+		
+		if(parseInt(left.rankings[strRanking].rank) == parseInt(right.rankings[strRanking].rank))
+		{
+			return 0;
+		}
+		else if(parseInt(left.rankings[strRanking].rank) < parseInt(right.rankings[strRanking].rank))
+		{
+			return -1;
+		}
+		else
+		{
+			return 1;
+		}
+	});
 	
 	return sortedTeams;
 }
@@ -183,4 +182,31 @@ function replaceIfMatch(string, regex, replaceString)
 	}
 	
 	return string;
+}
+
+TeamContainer.prototype.CalculateAverageRankings = function()
+{
+	for(thisTeam in this.teams)
+	{
+		var team = this.teams[thisTeam];
+		
+		var rankingCount = 0;
+		var rankingSum = 0;
+		
+		for(ranking in team.rankings)
+		{
+			if(ranking !== 'Average')
+			{
+				rankingSum = rankingSum + parseInt(team.rankings[ranking].rank);
+				rankingCount++;
+			}
+		}
+		
+		
+		team.rankings.Average = team.rankings.Average || {};
+		
+		team.rankings.Average.name = "Average";
+		console.log("sum: %j count: %j average: %j", rankingSum, rankingCount, rankingSum/rankingCount);
+		team.rankings.Average.rank = (rankingSum/rankingCount);
+	}
 }

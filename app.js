@@ -45,8 +45,9 @@ app.get('/', function(req, res)
 
 app.get('/ByRanking/:rankingName', function(req, res)
 {
+	teams.CalculateAverageRankings();
 	res.render('index', { title: 'March Madness Ranker', 
-			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), rankings: ['Sagarin', 'Massey']});
+			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), rankings: ['Sagarin', 'Massey', 'Average']});
 
 });
 
@@ -59,9 +60,10 @@ app.get('/all', function(req, res)
 
 app.get('/debug', function(req, res)
 {
-	console.log(teams.GetTeamsWithBetterRank(200));
+
+	teams.CalculateAverageRankings();
 	
-	res.send(JSON.stringify(teams.GetTeamsWithBetterRank(200)));
+	res.send(JSON.stringify(teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), 'Sagarin'), null, 1));
 });
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
