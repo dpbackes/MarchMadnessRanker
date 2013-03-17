@@ -45,9 +45,9 @@ app.get('/', function(req, res)
 
 app.get('/ByRanking/:rankingName', function(req, res)
 {
-	teams.CalculateAverageRankings();
+	teams.DoCalculatedRankings();
 	res.render('index', { title: 'March Madness Ranker', 
-			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), rankings: ['Sagarin', 'Massey', 'Average']});
+			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), rankings: ['Sagarin', 'Massey', 'Average', 'StandardDev']});
 
 });
 

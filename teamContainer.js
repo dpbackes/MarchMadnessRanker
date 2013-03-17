@@ -48,9 +48,13 @@ TeamContainer.prototype.GetTeamsWithBetterRank = function(rank)
 			for(teamRankIndex in team.rankings)
 			{
 			
-				if(team.rankings[teamRankIndex].rank < rank)
+				if(teamRankIndex !== 'Average' && teamRankIndex !=='StandardDev')
 				{
-					teamsBetterRanked[team.name]=team;
+			
+					if(team.rankings[teamRankIndex].rank < rank)
+					{
+						teamsBetterRanked[team.name]=team;
+					}
 				}
 			}
 		}
@@ -62,9 +66,10 @@ TeamContainer.prototype.OrderByRanking = function(teamList, strRanking)
 {
 	var teamArray = [];
 	
-	for(team in this.teams)
+	
+	for(team in teamList)
 	{
-		teamArray.push(this.teams[team]);
+		teamArray.push(teamList[team]);
 	}
 	
 	var sortedTeams = MergeSort(teamArray, function(left, right)
@@ -79,11 +84,11 @@ TeamContainer.prototype.OrderByRanking = function(teamList, strRanking)
 			return -1;
 		}
 		
-		if(parseInt(left.rankings[strRanking].rank) == parseInt(right.rankings[strRanking].rank))
+		if(parseFloat(left.rankings[strRanking].rank) == parseFloat(right.rankings[strRanking].rank))
 		{
 			return 0;
 		}
-		else if(parseInt(left.rankings[strRanking].rank) < parseInt(right.rankings[strRanking].rank))
+		else if(parseFloat(left.rankings[strRanking].rank) < parseFloat(right.rankings[strRanking].rank))
 		{
 			return -1;
 		}
@@ -185,13 +190,21 @@ function replaceIfMatch(string, regex, replaceString)
 	return string;
 }
 
-TeamContainer.prototype.CalculateAverageRankings = function()
+TeamContainer.prototype.DoCalculatedRankings = function()
 {
-
 	if(!this.dirty)
 	{
-		return false;
+		return;
 	}
+	
+	this.CalculateAverageRankings();
+	this.CalculateStandardDeviation();
+	
+	this.dirty = false;
+}
+
+TeamContainer.prototype.CalculateAverageRankings = function()
+{
 	
 	
 	for(thisTeam in this.teams)
@@ -216,6 +229,30 @@ TeamContainer.prototype.CalculateAverageRankings = function()
 		team.rankings.Average.name = "Average";
 		team.rankings.Average.rank = (rankingSum/rankingCount);
 	}
-	
-	this.dirty= false;
+}
+
+TeamContainer.prototype.CalculateStandardDeviation = function()
+{
+	for(thisTeam in this.teams)
+	{
+		var team = this.teams[thisTeam];
+		
+		var rankingCount = 0;
+		var rankingSum = 0;
+		
+		for(ranking in team.rankings)
+		{
+			if(ranking !== 'Average' && ranking !== 'StandardDev')
+			{
+				rankingDiff = rankingSum + Math.abs(parseInt(team.rankings[ranking].rank) - parseInt(team.rankings['Average'].rank));
+				rankingCount++;
+			}
+		}
+		
+		
+		team.rankings.StandardDev = team.rankings.StandardDev || {};
+		
+		team.rankings.StandardDev.name = "StandardDev";
+		team.rankings.StandardDev.rank = (rankingDiff/rankingCount);
+	}
 }
