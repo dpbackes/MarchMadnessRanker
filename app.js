@@ -40,11 +40,21 @@ app.configure('development', function(){
 
 app.get('/', function(req, res)
 {
+	res.redirect('/ByRanking/Sagarin');
+});
 
-	res.render('index', { title: 'March Madness Ranker', teams: teams.GetTeamsWithBetterRank(200)});
+app.get('/ByRanking/:rankingName', function(req, res)
+{
+	res.render('index', { title: 'March Madness Ranker', 
+			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), rankings: ['Sagarin', 'Massey']});
 
 });
-app.get('/users', user.list);
+
+
+app.get('/all', function(req, res)
+{
+	res.render('index', { title: 'March Madness Ranker', teams:  teams.GetTeamsWithBetterRank(400),rankings: ['Sagarin', 'Massey']});
+});
 
 
 app.get('/debug', function(req, res)

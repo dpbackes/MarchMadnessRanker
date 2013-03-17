@@ -41,11 +41,24 @@ TeamContainer.prototype.GetTeamsWithBetterRank = function(rank)
 		for(teamIndex in this.teams)
 		{
 			var team = this.teams[teamIndex];
-			//console.log("Team: "+ team);
+			
+			
+			//console.log(JSON.stringify(team.name));
+			if(team.name.match(/^Quin/))
+			{
+				console.log(team.name + JSON.stringify(team.rankings));
+				console.log(team.rankings[teamRankIndex].rank);
+			}
+			
 			for(teamRankIndex in team.rankings)
 			{
+			
 				if(team.rankings[teamRankIndex].rank < rank)
 				{
+					if(team.name.match(/^Quin/))
+					{
+						console.log("here");
+					}
 					teamsBetterRanked[team.name]=team;
 				}
 			}
@@ -53,6 +66,36 @@ TeamContainer.prototype.GetTeamsWithBetterRank = function(rank)
 		
 		return teamsBetterRanked;
 }
+
+TeamContainer.prototype.OrderByRanking = function(teamList, strRanking)
+{
+
+	//worst sorting method ever
+	var currentRank = 1;
+	var sortedTeams = {};
+
+	//lazy sorting B-)
+	
+	while(Object.keys(teamList).length > 0)
+	{
+		var found = false;
+		for(team in teamList)
+		{
+			
+			if(teamList[team].rankings[strRanking].rank == currentRank)
+			{
+				sortedTeams[teamList[team].name] = teamList[team];
+				delete teamList[team];
+				found = true;
+				break;
+			}
+		}
+		currentRank++;
+	}
+	
+	return sortedTeams;
+}
+
 
 function normalizeTeamName(teamName)
 {
