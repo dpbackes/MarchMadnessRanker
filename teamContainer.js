@@ -1,3 +1,4 @@
+var util = require('util');
 var MergeSort = require('./sorting').MergeSort;
 
 module.exports.TeamContainer = TeamContainer;
@@ -105,6 +106,9 @@ TeamContainer.prototype.OrderByRanking = function(teamList, strRanking)
 function normalizeTeamName(teamName)
 {
 
+
+	var show = false;
+
 	var patterns = [
 	
 		// ["UT Arlington", "Texas Arlington"],
@@ -114,8 +118,8 @@ function normalizeTeamName(teamName)
 		[ /=/,""],
 		
 		// state and saint should be spelled out
-		[ /St$/, "State"],
-		[ /^St |^St. /, "Saint "],
+		[ /St$|St\.$/, "State"],
+		[ /^St |^St\. /, "Saint "],
 		
 		////// U. and Univ should be "University" /////
 		[ /U\.$|Univ/, "University"],
@@ -127,7 +131,8 @@ function normalizeTeamName(teamName)
 		[ /^W[\s]/, "West "],
 		[ /^Eastern[\s]/, "East "],
 		[ /^Western[\s]/, "West "],
-		[ /So$/, "Southern"],
+		[ /So$|S\.$/, "Southern"],
+		[/^West\./, 'West'],
 		
 		//// states ///////////////////////////////////
 		[ /FL$/, "Florida"],
@@ -140,6 +145,9 @@ function normalizeTeamName(teamName)
 		[ /^TX/, "Texas"],
 		[ /^GA/, "Georgia"],
 		[ /^IL/, "Illinois"],
+		[/^Fla/, 'Florida'],
+		[/Ill\.$/, 'Illinois'],
+		[/^Ark\.|^Ark|^AR/, "Arkansas"],
 		
 		
 		////// special cases//////////////////////////
@@ -162,7 +170,26 @@ function normalizeTeamName(teamName)
 		[ "Hawai'i", "Hawaii"],
 		[ "Mt St Mary's", "Mount St. Mary's"],
 		[ "Oakland Mich.", "Oakland"],
-		[ /^SC Upstate$/, "USC Upstate"],
+		[ /^SC Upstate$|^USC Upstate$/, "South Carolina Upstate"],
+		[ /\(FL\)$/, 'Florida'],
+		[ /\(OH\)$/, 'Ohio'],
+		[/^N\.C\./, "NC"],
+		[/^Loyola Marymnt$/, 'Loyola Marymount'],
+		[/Florida\./, 'Florida'],
+		[/Intl\.$/, 'International'],
+		[/^South\. Methodist$/, 'SMU'],
+		[/^Loyola \(MD\)$/, "Loyola Maryland"],
+		[/^Loyola \(IL\)$/, "Loyola Chicago"],
+		[/^Geo\./, "George"],
+		[/^Charleston$/, "College of Charleston"],
+		[/^Wisc\. Green Bay$/, "Green Bay"],
+		[/^Cal Poly$/, "Cal Poly SLO"],
+		[/^Albany$/, "Albany NY"],
+		[/^Brigham Young$/, "BYU"],
+		[/^Saint Joseph's$/, "Saint Joseph's PA"],
+		[/^Middle Tenn\. State$/, "Middle Tennessee"],
+		[/^Saint Mary's$/, "Saint Mary's California"],
+		[/^Central Conn. State$|^Central Conn$/, "Central Connecticut State"],
 		[/\(.*\)/, ""] //removes anything in parenthesis
 		
 	
@@ -170,7 +197,7 @@ function normalizeTeamName(teamName)
 	
 	for(index in patterns)
 	{
-		teamName = replaceIfMatch(teamName, patterns[index][0], patterns[index][1]);
+		teamName = replaceIfMatch(teamName, patterns[index][0], patterns[index][1]).trim();
 	}
 	
 	teamName = teamName.trim();
@@ -227,7 +254,7 @@ TeamContainer.prototype.CalculateAverageRankings = function()
 		team.rankings.Average = team.rankings.Average || {};
 		
 		team.rankings.Average.name = "Average";
-		team.rankings.Average.rank = (rankingSum/rankingCount);
+		team.rankings.Average.rank = parseFloat(rankingSum/rankingCount).toFixed(2);
 	}
 }
 
@@ -238,21 +265,22 @@ TeamContainer.prototype.CalculateStandardDeviation = function()
 		var team = this.teams[thisTeam];
 		
 		var rankingCount = 0;
-		var rankingSum = 0;
+		var rankingDiff = 0;
 		
 		for(ranking in team.rankings)
 		{
 			if(ranking !== 'Average' && ranking !== 'StandardDev')
 			{
-				rankingDiff = rankingSum + Math.abs(parseInt(team.rankings[ranking].rank) - parseInt(team.rankings['Average'].rank));
+				var avDiff = parseFloat(team.rankings[ranking].rank) - parseFloat(team.rankings['Average'].rank);
+				var avDiffSq = Math.pow(avDiff, 2);
+				
+				rankingDiff = rankingDiff + avDiffSq;
 				rankingCount++;
 			}
 		}
-		
-		
 		team.rankings.StandardDev = team.rankings.StandardDev || {};
 		
 		team.rankings.StandardDev.name = "StandardDev";
-		team.rankings.StandardDev.rank = (rankingDiff/rankingCount);
+		team.rankings.StandardDev.rank = Math.sqrt((rankingDiff/(rankingCount-1))).toFixed(2);
 	}
 }

@@ -19,6 +19,7 @@ var teams = new TeamContainer();
 
 var sagarin = require('./lib/scrapers/sagarin')(teams);
 var massey = require('./lib/scrapers/massey')(teams);
+var rpi = require('./lib/scrapers/rpi')(teams);
 
 var app = express();
 
@@ -47,7 +48,7 @@ app.get('/ByRanking/:rankingName', function(req, res)
 {
 	teams.DoCalculatedRankings();
 	res.render('index', { title: 'March Madness Ranker', 
-			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), rankings: ['Sagarin', 'Massey', 'Average', 'StandardDev']});
+			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), rankings: ['Sagarin', 'Massey', 'RPI', 'Average', 'StandardDev']});
 
 });
 
