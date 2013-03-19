@@ -156,6 +156,7 @@ function normalizeTeamName(teamName)
 		[ "SF Austin", "Stephen F. Austin"],
 		[ "Southern California", "USC"],
 		[ "VA Commonwealth", "VCU(Va. Commonwealth)"],
+		["Virginia Commonwealth", "VCU"],
 		[ /^Kent$/, "Kent State"],
 		[ /^G[\s]/, "George "],
 		[ /^UCF$/, "Central Florida(UCF)"],
@@ -174,6 +175,7 @@ function normalizeTeamName(teamName)
 		[ /\(FL\)$/, 'Florida'],
 		[ /\(OH\)$/, 'Ohio'],
 		[/^N\.C\./, "NC"],
+		[/^NC[\s]/, "North Carolina "],
 		[/^Loyola Marymnt$/, 'Loyola Marymount'],
 		[/Florida\./, 'Florida'],
 		[/Intl\.$/, 'International'],
@@ -190,6 +192,7 @@ function normalizeTeamName(teamName)
 		[/^Middle Tenn\. State$/, "Middle Tennessee"],
 		[/^Saint Mary's$/, "Saint Mary's California"],
 		[/^Central Conn. State$|^Central Conn$/, "Central Connecticut State"],
+		["Nevada Las Vegas", "UNLV"],
 		[/\(.*\)/, ""] //removes anything in parenthesis
 		
 	
