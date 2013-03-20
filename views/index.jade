@@ -3,18 +3,45 @@ extends layout
 block content
 	| <a href="https://github.com/dpbackes/MarchMadnessRanker"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 	h1= title
-	table
-		tr 
-			td Name
-			- each ranking in rankings
-				td
-					a(href='/ByRanking/'+ranking)= ranking
-		- each team in teams
-			tr
-				td #{team.name}
-				- each ranking in rankings
-					- if(team.rankings[ranking])
-						td #{team.rankings[ranking]["rank"]}
-					- else
+	form(action='', method='get')
+		input(type='submit',value='Compare')
+		- if (doCompare)
+			table
+				tr 
+					td
+						|&nbsp;
+					td Name
+					- each ranking in rankings
+						td
+							a(href='/ByRanking/'+ranking+queryString)= ranking
+				- each team in compareTeams
+					tr
 						td 
-		
+							input(type="checkbox", name=team.name, checked)
+						td #{team.name}
+						- each ranking in rankings
+							- if(team.rankings[ranking])
+								td #{team.rankings[ranking]["rank"]}
+									
+							- else
+								td 
+			<hr>
+		table
+			tr 
+				td
+				td Name
+				- each ranking in rankings
+					td
+						a(href='/ByRanking/'+ranking+queryString)= ranking
+			- each team in teams
+				tr
+					td 
+						input(type="checkbox", name=team.name)
+					td #{team.name}
+					- each ranking in rankings
+						- if (team.rankings[ranking])
+							td #{team.rankings[ranking]["rank"]}
+								
+						- else
+							td 
+		input(type='submit',value='Compare')

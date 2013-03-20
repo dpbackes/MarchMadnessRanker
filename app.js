@@ -33,6 +33,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
+  app.locals.pretty = true;
 });
 
 app.configure('development', function(){
@@ -46,9 +47,32 @@ app.get('/', function(req, res)
 
 app.get('/ByRanking/:rankingName', function(req, res)
 {
+	
+	var ct = {};
+	var dc = false;
+	
+	
+	ct = {};
+	
+	console.log(req);
+	
+	for(team in req.query)
+	{
+		console.log(team);
+		dc = true;
+		ct[team] = teams.getTeam(team);
+	}
+	
+	ct = teams.OrderByRanking(ct, req.params.rankingName);
 	teams.DoCalculatedRankings();
-	res.render('index', { title: 'March Madness Ranker', 
-			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), rankings: ['Sagarin', 'Massey', 'RPI', 'Average', 'StandardDev']});
+	res.render('index', { 
+			title: 'March Madness Ranker', 
+			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), 
+			rankings: ['Sagarin', 'Massey', 'RPI', 'Average', 'StandardDev'], 
+			compareTeams: ct, 
+			doCompare: dc,
+			queryString: req._parsedUrl.search
+	});
 
 });
 
