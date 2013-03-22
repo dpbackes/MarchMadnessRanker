@@ -20,6 +20,7 @@ var teams = new TeamContainer();
 var sagarin = require('./lib/scrapers/sagarin')(teams);
 var massey = require('./lib/scrapers/massey')(teams);
 var rpi = require('./lib/scrapers/rpi')(teams);
+var self = require('./lib/scrapers/self')(teams);
 
 var app = express();
 
@@ -54,11 +55,8 @@ app.get('/ByRanking/:rankingName', function(req, res)
 	
 	ct = {};
 	
-	console.log(req);
-	
 	for(team in req.query)
 	{
-		console.log(team);
 		dc = true;
 		ct[team] = teams.getTeam(team);
 	}
@@ -68,10 +66,10 @@ app.get('/ByRanking/:rankingName', function(req, res)
 	res.render('index', { 
 			title: 'March Madness Ranker', 
 			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), req.params.rankingName), 
-			rankings: ['Sagarin', 'Massey', 'RPI', 'Average', 'StandardDev'], 
+			rankings: ['Sagarin', 'Self', 'RPI', 'Average', 'StandardDev'], 
 			compareTeams: ct, 
 			doCompare: dc,
-			queryString: req._parsedUrl.search
+			queryString: req._parsedUrl.search || ""
 	});
 
 });
@@ -79,7 +77,14 @@ app.get('/ByRanking/:rankingName', function(req, res)
 
 app.get('/all', function(req, res)
 {
-	res.render('index', { title: 'March Madness Ranker', teams:  teams.GetTeamsWithBetterRank(400),rankings: ['Sagarin', 'Massey']});
+	res.render('index', { 
+			title: 'March Madness Ranker', 
+			teams: teams.OrderByRanking(teams.GetTeamsWithBetterRank(400), req.params.rankingName), 
+			rankings: ['Sagarin', 'Self', 'RPI', 'Average', 'StandardDev'], 
+			compareTeams: [], 
+			doCompare: false,
+			queryString: ""
+	});
 });
 
 
@@ -89,6 +94,12 @@ app.get('/debug', function(req, res)
 	teams.CalculateAverageRankings();
 	
 	res.send(JSON.stringify(teams.OrderByRanking(teams.GetTeamsWithBetterRank(200), 'Sagarin'), null, 1));
+});
+
+app.get('/json', function(req, res)
+{
+	teams.CalculateAverageRankings();
+	res.send(JSON.stringify(teams.teams));
 });
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

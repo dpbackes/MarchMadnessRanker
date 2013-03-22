@@ -147,14 +147,19 @@ function normalizeTeamName(teamName)
 		[ /^IL/, "Illinois"],
 		[/^Fla/, 'Florida'],
 		[/Ill\.$/, 'Illinois'],
-		[/^Ark\.|^Ark|^AR/, "Arkansas"],
+		[/^Ark\.[\s]|^Ark[\s]|^AR/, "Arkansas"],
+		
+		
+		
+		/////////// abreviations //////////
+		[/Int'l/, "International"],
 		
 		
 		////// special cases//////////////////////////
-		[ "Xavier Ohio", "Xavier"],
+		[ /^Xavier (Ohio|OH)$/, "Xavier"],
 		[ "Stony Brook NY", "Stony Brook"],
 		[ "SF Austin", "Stephen F. Austin"],
-		[ "Southern California", "USC"],
+		[ /^Southern California$|^Southern Cal$/, "USC"],
 		[ "VA Commonwealth", "VCU(Va. Commonwealth)"],
 		["Virginia Commonwealth", "VCU"],
 		[ /^Kent$/, "Kent State"],
@@ -184,15 +189,28 @@ function normalizeTeamName(teamName)
 		[/^Loyola \(IL\)$/, "Loyola Chicago"],
 		[/^Geo\./, "George"],
 		[/^Charleston$/, "College of Charleston"],
-		[/^Wisc\. Green Bay$/, "Green Bay"],
+		[/^Wisc\. Green Bay$|^UW Green Bay$/, "Green Bay"],
 		[/^Cal Poly$/, "Cal Poly SLO"],
 		[/^Albany$/, "Albany NY"],
 		[/^Brigham Young$/, "BYU"],
 		[/^Saint Joseph's$/, "Saint Joseph's PA"],
-		[/^Middle Tenn\. State$/, "Middle Tennessee"],
+		[/^Middle Tenn\. State$|Middle Tennessee State/, "Middle Tennessee"],
 		[/^Saint Mary's$/, "Saint Mary's California"],
 		[/^Central Conn. State$|^Central Conn$/, "Central Connecticut State"],
 		["Nevada Las Vegas", "UNLV"],
+		["Georgetown DC", "Georgetown"],
+		["Saint Louis University", "Saint Louis"],
+		["Providence RI", "Providence"],
+		["Ohio University", "Ohio"],
+		["Detroit Mercy", "Detroit"],
+		["Pacific California", "Pacific"],
+		["Saint John's NY", "Saint John's"],
+		["Robert Morris PA", "Robert Morris"],
+		["Mount St. Mary's Maryland", "Mount St. Mary's"],
+		["Niagara NY", "Niagara"],
+		["Alabama Birmingham", "UAB"],
+		[/^Coll of/, "College of"],
+		["LIU Brooklyn", "Long Island University"],
 		[/\(.*\)/, ""] //removes anything in parenthesis
 		
 	
@@ -284,6 +302,13 @@ TeamContainer.prototype.CalculateStandardDeviation = function()
 		team.rankings.StandardDev = team.rankings.StandardDev || {};
 		
 		team.rankings.StandardDev.name = "StandardDev";
-		team.rankings.StandardDev.rank = Math.sqrt((rankingDiff/(rankingCount-1))).toFixed(2);
+		if(rankingCount == 1)
+		{
+			team.rankings.StandardDev.rank = 0;
+		}
+		else
+		{
+			team.rankings.StandardDev.rank = Math.sqrt((rankingDiff/(rankingCount-1))).toFixed(2);
+		}
 	}
 }
