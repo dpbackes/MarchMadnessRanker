@@ -18,7 +18,7 @@ var express = require('express')
 var teams = new TeamContainer();
 
 var sagarin = require('./lib/scrapers/sagarin')(teams);
-var massey = require('./lib/scrapers/massey')(teams);
+//var massey = require('./lib/scrapers/massey')(teams);
 var rpi = require('./lib/scrapers/rpi')(teams);
 var self = require('./lib/scrapers/self')(teams);
 
